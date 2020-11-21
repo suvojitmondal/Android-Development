@@ -1,0 +1,58 @@
+public class MainActivity extends AppCompatActivity {
+
+    int n;
+    MediaPlayer mediaplayer;
+
+    public void fun(View view){
+
+        Button button = (Button) view;
+
+        n = Integer.parseInt((button.getTag()).toString());
+
+        switch (n){
+            case 1:
+                mediaplayer = MediaPlayer.create(this, R.raw.doyouspeakenglish);
+                mediaplayer.start();
+
+                break;
+            case 2:
+                mediaplayer = MediaPlayer.create(this, R.raw.goodevening);
+                mediaplayer.start();
+                break;
+
+            case 3:
+                mediaplayer = MediaPlayer.create(this, R.raw.hello);
+                mediaplayer.start();
+                break;
+            case 4:
+                mediaplayer = MediaPlayer.create(this, R.raw.howareyou);
+                mediaplayer.start();
+                break;
+            case 5:
+                mediaplayer = MediaPlayer.create(this, R.raw.ilivein);
+                mediaplayer.start();
+                break;
+            case 6:
+                mediaplayer = MediaPlayer.create(this, R.raw.mynameis);
+                mediaplayer.start();
+                break;
+            case 7:
+                mediaplayer = MediaPlayer.create(this, R.raw.please);
+                mediaplayer.start();
+                break;
+            case 8:
+                mediaplayer = MediaPlayer.create(this, R.raw.welcome);
+                mediaplayer.start();
+                break;
+        }
+
+
+    }
+
+
+//SOUND FILE AS VARIALBLE
+
+private void playMp3(String nameOfFile){
+   MediaPlayer mPlayer = MediaPlayer.create(this, getResources().getIdentifier(nameOfFile, "raw", getPackageName()));
+   mPlayer.start();
+}

@@ -1,0 +1,102 @@
+
+
+
+public class MainActivity extends AppCompatActivity {
+    MediaPlayer media;
+    AudioManager audioManager;
+
+
+
+    public void clickPlay(View view){
+    media.start();
+    }
+    public void clickPause(View view){
+        media.pause();
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        media = MediaPlayer.create(this,R.raw.song);
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE); // initializing audioManager object
+
+        int maxvolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); //maxvolume will get the maximum system sound
+        int currentvolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC); // currentvolume will get the current volume form the system sound
+
+        SeekBar volumeseekbar = (SeekBar) findViewById(R.id.seekBar); //crating volumeseekbar object for seekbar class
+
+        volumeseekbar.setMax(maxvolume); //setting the max volume
+        volumeseekbar.setProgress(currentvolume); // setting the current position
+
+
+        volumeseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { //this method holds three methods
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+// positon control of the music
+
+
+
+ final SeekBar scrubSeekBar = (SeekBar) findViewById(R.id.scrubSeekBar);
+
+        scrubSeekBar.setMax(mediaPlayer.getDuration());
+
+        scrubSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                Log.i("Scrub seekbar moved", Integer.toString(i));
+
+                mediaPlayer.seekTo(i); // set the music postion according to the seekbar postion
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                scrubSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+
+            }
+        }, 0, 300); //0: staring position, 300: timelaps
+
+    }
+
+}

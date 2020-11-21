@@ -1,0 +1,72 @@
+
+JAVA VARARGS - 	Let’s suppose you are creating a Java method. However, you are not sure how many arguments your method is going to accept. To address this problem, Java 1.5 introduced varargs.
+
+Varargs is a short name for variable arguments. In Java, an argument of a method can accept arbitrary number of values. This argument that can accept variable number of values is called varargs.
+
+
+
+//CLASSES
+package com.example.downloadingwebconjtent;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+
+//MAIN CODE
+
+public class MainActivity extends AppCompatActivity {
+
+
+    class download extends AsyncTask<String , String, String>{
+        @Override
+        protected String doInBackground(String... urls) {
+            URL url;
+            String string = "";
+            HttpURLConnection httpURLConnection = null;
+            try {
+                url = new URL(urls[0]);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = httpURLConnection.getInputStream();
+                InputStreamReader input = new InputStreamReader(in);
+                int content = input.read();
+
+                //Loop for getting the content
+                while (content!=-1){
+                    char c = (char) content;
+                    string += c;
+
+                    content = input.read();
+                }
+                return string;
+
+            }catch (Exception e){
+                e.printStackTrace();
+                return  "FAILED";
+            }
+
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        download d = new download();
+        String s = null;
+        try {
+            s = d.execute("https://github.com/imonfire07").get();
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        Log.i("Content", s);
+
+    }

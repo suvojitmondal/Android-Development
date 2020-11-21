@@ -1,0 +1,31 @@
+public class MainActivity extends AppCompatActivity {
+
+    MediaPlayer mediaPlayer; // creating the MediaPlayer Object
+
+    public void play(View view) {
+
+        mediaPlayer.start();
+
+    }
+
+    public void pause(View view) {
+
+        mediaPlayer.pause();
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.marbles); // The instance will be created at app starting time
+ 
+    }
+}
+
+
+
+
+
+

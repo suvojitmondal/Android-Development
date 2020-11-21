@@ -1,0 +1,130 @@
+package com.example.jsondownload;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+public class MainActivity extends AppCompatActivity {
+
+    TextView textView;
+    EditText editText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        textView = (TextView) findViewById(R.id.textView3);
+        editText = (EditText) findViewById(R.id.editText2);
+
+    }
+    public void func(View view){
+
+        try {
+            download j = new download();
+            String encodedCityName = URLEncoder.encode(editText.getText().toString(), "UTF-8");
+            Log.i("CityName -",encodedCityName);
+            j.execute("http://api.openweathermap.org/data/2.5/weather?q= " +encodedCityName+ "&appid=035ef7ee7f9a0ca1ac2d96599e449009");
+            InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            mgr.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+        }catch (Exception e){
+            e.printStackTrace();;
+        }
+
+    }
+
+
+    class download extends AsyncTask<String,String,String>{
+
+        String msg;
+        String main;
+        String descripton;
+        @Override
+        protected String doInBackground(String... urls) {
+
+            String st = "";
+            URL url;
+            HttpURLConnection httpURLConnection;
+
+            try{
+
+                url = new URL(urls[0]);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = httpURLConnection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(in);
+                int content = inputStreamReader.read();
+
+
+                while (content!=-1){
+                    char c = (char) content;
+                    st += c;
+                    content = inputStreamReader.read();
+
+                }
+                return  st;
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+                return "ERROR";
+            }
+        }
+
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+
+                String weatherInfo = jsonObject.getString("weather");
+
+                JSONArray arr = new JSONArray(weatherInfo);
+
+                for (int i=0; i < arr.length(); i++) {
+                    JSONObject jsonPart = arr.getJSONObject(i);
+                    main =jsonPart.getString("main");
+                    descripton = jsonPart.getString("description");
+                    if (!main.equals("") && !descripton.equals("")) {
+                        msg = main + ":\n" + descripton;
+                    }
+
+                }
+
+
+                if(!msg.equals("")) {
+                    textView.setText(msg);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Could not find weather :(",Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(),"Could not find weather :(",Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+}
+
+
+

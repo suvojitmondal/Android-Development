@@ -1,0 +1,49 @@
+public class MainActivity extends AppCompatActivity {
+
+    public void onFunc(View view){
+        ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+        downloadImage d = new downloadImage();
+        Bitmap b; //We need Bitmap cause it is a image and Android studio consider it as a image
+        try {
+            b = d.execute("https://avatars3.githubusercontent.com/u/39871875?s=400&u=b6d358a0e5079de221fc6be853f211b95b0c077e&v=4").get(); // Provided the URL and b will store the rerurned image
+            imageView.setImageBitmap(b);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+
+    }
+}
+
+
+class downloadImage extends AsyncTask<String,String, Bitmap>{   // Creating different class 
+
+    @Override
+    protected Bitmap doInBackground(String... urls) {
+
+        try {
+
+            URL url = new URL(urls[0]);
+            HttpURLConnection urlConnection = null;
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+            InputStream in = urlConnection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(in); // for storing the image content
+            return bitmap; // It will return the downloaded image
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
